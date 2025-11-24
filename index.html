@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>奥奥 17岁生日快乐 🎉</title>
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="奥奥 17岁生日快乐 🎉">
+    <meta property="og:description" content="A special birthday e-card with love">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1464349095431-e9a21285b2b3?w=1200&h=630&fit=crop">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="奥奥 17岁生日快乐 🎉">
+    <meta name="twitter:description" content="A special birthday e-card with love">
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1464349095431-e9a21285b2b3?w=1200&h=630&fit=crop">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: 'Noto Serif SC', 'KaiTi', serif;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            background: #000;
+        }
+        
+        /* 星空背景 */
+        .starry-sky {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+            z-index: 1;
+        }
+        
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        
+        /* 场景容器 */
+        .scene {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        
+        .scene.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        /* 礼物盒场景 */
+        .gift-box {
+            font-size: 120px;
+            cursor: pointer;
+            animation: swing 2s ease-in-out infinite;
+            transform-origin: center center;
+            user-select: none;
+        }
+        
+        @keyframes swing {
+            0%, 100% { transform: rotate(-10deg); }
+            50% { transform: rotate(10deg); }
+        }
+        
+        .gift-box.shrink {
+            animation: shrinkOut 0.5s ease-out forwards;
+        }
+        
+        @keyframes shrinkOut {
+            to {
+                transform: scale(0);
+                opacity: 0;
+            }
+        }
+        
+        .click-text {
+            color: white;
+            font-size: 24px;
+            margin-top: 20px;
+            font-family: 'Georgia', serif;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        /* 音乐按钮 */
+        .music-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            font-size: 24px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .music-btn:active {
+            transform: scale(0.9);
+        }
+        
+        .music-btn.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* 生日祝福文字 */
+        .birthday-text {
+            color: white;
+            font-size: 48px;
+            text-align: center;
+            line-height: 1.6;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8),
+                         0 0 40px rgba(255, 215, 0, 0.5);
+            animation: bounceIn 1s ease-out;
+            white-space: pre-line;
+            padding: 0 20px;
+        }
+        
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .birthday-text.fade-out {
+            animation: fadeOut 1s ease-out forwards;
+        }
+        
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+        }
+        
+        /* 信件滚动 */
+        .letter-container {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .letter-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            pointer-events: none;
+            z-index: 2;
+        }
+        
+        .letter-content {
+            color: #f0e6d2;
+            font-size: 18px;
+            line-height: 2;
+            padding: 20px 30px;
+            text-align: justify;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            transform: translateY(100%);
+        }
+        
+        .letter-content.scrolling {
+            animation: scrollUp linear forwards;
+        }
+        
+        @keyframes scrollUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(-100%);
+            }
+        }
+        
+        .letter-content p {
+            margin-bottom: 1.5em;
+            text-indent: 2em;
+        }
+        
+        .letter-content p:last-child {
+            text-align: right;
+            text-indent: 0;
+            margin-top: 2em;
+        }
+        
+        /* YouTube视频 */
+        .video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 50;
+            background: black;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
+        }
+        
+        .video-container.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .video-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- 星空背景 -->
+    <div class="starry-sky" id="starry-sky"></div>
+    
+    <!-- 音乐按钮 -->
+    <div class="music-btn" id="musicBtn">🔇</div>
+    
+    <!-- 背景音乐 -->
+    <audio id="bgMusic" loop>
+        <source src="https://github.com/Estal3now/aoao-BTHGIFT-h5/raw/main/M500003ssiGb2hn5kA.mp3" type="audio/mpeg">
+    </audio>
+    
+    <!-- 场景1: 礼物盒 -->
+    <div class="scene active" id="scene1">
+        <div class="gift-box" id="giftBox">🎁</div>
+        <div class="click-text">Click to Open</div>
+    </div>
+    
+    <!-- 场景2: 生日祝福 -->
+    <div class="scene" id="scene2">
+        <div class="birthday-text" id="birthdayText">奥奥
+17岁生日快乐！🎉</div>
+    </div>
+    
+    <!-- 场景3: 信件 -->
+    <div class="scene" id="scene3">
+        <div class="letter-container">
+            <div class="letter-overlay"></div>
+            <div class="letter-content" id="letterContent">
+                <p>夜是深了，窗外大约早已没了行人，只剩下偶尔驶过的车轮声,碾压着寂静。我面前只有这方屏幕，泛着幽冷的光。屏幕里那几行横竖不听使唤的代码，和那个断断续续、总也连不顺畅的影像，大抵便是要给你的"贺礼"了。</p>
+                
+                <p>我向来是不惮以最坏的恶意来推测这些洋机器的。然而我不料，也不信竟会艰难到这地步。</p>
+                
+                <p>本意原是好的。想着日子近了，寻常的物件终究俗气，总该有些什么东西，是确凿地经了我的脑子，费了我的心血。于是便不知天高地厚地动了念头，学着时髦的样子，要去摆弄什么网页，剪裁什么视频。</p>
+                
+                <p>这几日的光景，怕是连我自己都不愿回忆的。平日里拿笔的手，如今敲在键盘上，竟比举着石锁还要滞涩。那些英文字母，一个个拆开来我是认得的，可一旦它们结成了伙，变成了什么"语言"，便合起伙来也要欺负我这门外汉了。</p>
+                
+                <p>我想着要在网页上为你栽一朵花，代码敲下去，结果屏幕上却跳出一堆赤红的报错，像极了我此刻涨红的脸；我想在视频里留住你某一个瞬间的笑，可那剪辑的刀剪，总是在不该落下的时候落下，把一段好好的光影，裁得支离破碎，正如我这笨嘴拙舌的人，每每想要讨好，却总是弄巧成拙。</p>
+                
+                <p>如今这成品摆在这里——倘若这也能算作成品的话。网页是简陋的，排版大抵是有些歪斜；视频是粗糙的，背景里的噪点，比我此刻心里的乱麻还要多。色调也不甚高明，透着一股子无可奈何的俗气。</p>
+                
+                <p>然而，我横竖想了半晌，还是决定将这链接发给你。</p>
+                
+                <p>这其中并没有什么了不得的道理。只是觉得，网络上那些精美的、流光溢彩的界面，多的是专业的人去做，只要出了银钱，怎样的繁华景象都能买到。而这件满是漏洞（Bug）、带着我熬夜的疲惫红眼、甚至藏着几声懊恼叹息的半成品，世间大抵只有这一件。</p>
+                
+                <p>你点开也罢，笑话也罢，嫌它卡顿直接关掉也罢。我大约也是不敢有怨言的。</p>
+                
+                <p>只是一点，在这些杂乱的像素和歪斜的构图底下，确是藏着一个愚人，那一点不可言说的、温热的痴气。</p>
+                
+                <p>这便是了。</p>
+                
+                <p>奥奥，十七岁生日快乐。</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- YouTube视频容器 -->
+    <div class="video-container" id="videoContainer">
+        <iframe 
+            id="youtubeVideo"
+            src="about:blank"
+            allow="autoplay; encrypted-media"
+            allowfullscreen>
+        </iframe>
+    </div>
+    
+    <!-- Confetti.js from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    
+    <script>
+        // 创建星空
+        function createStars() {
+            const container = document.getElementById('starry-sky');
+            const starCount = 200;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = star.style.height = (Math.random() * 2 + 1) + 'px';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                container.appendChild(star);
+            }
+        }
+        
+        createStars();
+        
+        // 音乐控制
+        const bgMusic = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('musicBtn');
+        let isMuted = true;
+        
+        // 尝试自动播放音乐（静音状态）
+        bgMusic.volume = 0;
+        bgMusic.play().catch(() => {
+            console.log('Autoplay blocked, waiting for user interaction');
+        });
+        
+        musicBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            isMuted = !isMuted;
+            
+            if (isMuted) {
+                bgMusic.volume = 0;
+                musicBtn.textContent = '🔇';
+            } else {
+                bgMusic.volume = 1;
+                musicBtn.textContent = '🔊';
+            }
+            
+            bgMusic.play().catch(err => console.log('Play error:', err));
+        });
+        
+        // 场景管理
+        let currentScene = 1;
+        const scenes = {
+            1: document.getElementById('scene1'),
+            2: document.getElementById('scene2'),
+            3: document.getElementById('scene3')
+        };
+        
+        function switchScene(from, to) {
+            scenes[from].classList.remove('active');
+            scenes[to].classList.add('active');
+            currentScene = to;
+        }
+        
+        // 场景1: 礼物盒点击
+        const giftBox = document.getElementById('giftBox');
+        giftBox.addEventListener('click', () => {
+            giftBox.classList.add('shrink');
+            
+            // 五彩纸屑和烟花效果
+            setTimeout(() => {
+                // 连续发射五彩纸屑
+                const duration = 3000;
+                const end = Date.now() + duration;
+                
+                const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+                
+                (function frame() {
+                    confetti({
+                        particleCount: 7,
+                        angle: 60,
+                        spread: 55,
+                        origin: { x: 0 },
+                        colors: colors
+                    });
+                    confetti({
+                        particleCount: 7,
+                        angle: 120,
+                        spread: 55,
+                        origin: { x: 1 },
+                        colors: colors
+                    });
+                    
+                    if (Date.now() < end) {
+                        requestAnimationFrame(frame);
+                    }
+                }());
+                
+                // 烟花效果
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 100,
+                        spread: 70,
+                        origin: { y: 0.6 },
+                        colors: colors
+                    });
+                }, 500);
+                
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 100,
+                        spread: 70,
+                        origin: { y: 0.6 },
+                        colors: colors
+                    });
+                }, 1000);
+            }, 500);
+            
+            // 切换到场景2
+            setTimeout(() => {
+                switchScene(1, 2);
+            }, 800);
+        });
+        
+        // 场景2: 生日祝福点击
+        const birthdayText = document.getElementById('birthdayText');
+        scenes[2].addEventListener('click', () => {
+            birthdayText.classList.add('fade-out');
+            
+            setTimeout(() => {
+                switchScene(2, 3);
+                startLetterScroll();
+            }, 1000);
+        });
+        
+        // 场景3: 信件滚动
+        function startLetterScroll() {
+            const letterContent = document.getElementById('letterContent');
+            const viewportHeight = window.innerHeight;
+            const contentHeight = letterContent.scrollHeight;
+            
+            // 计算滚动时间：从屏幕底部完全进入到完全离开屏幕顶部
+            // 总距离 = viewportHeight (从底部到顶部) + contentHeight (内容本身高度)
+            const totalDistance = viewportHeight + contentHeight;
+            
+            // 设置滚动速度：每像素的时间（秒）
+            const scrollSpeed = 0.03; // 可以调整这个值来改变滚动速度
+            const duration = totalDistance * scrollSpeed;
+            
+            letterContent.style.animationDuration = duration + 's';
+            letterContent.classList.add('scrolling');
+            
+            // 滚动完成后播放视频
+            setTimeout(() => {
+                showVideo();
+            }, duration * 1000);
+        }
+        
+        // 场景3: 也可以点击直接进入视频
+        scenes[3].addEventListener('click', () => {
+            showVideo();
+        });
+        
+        // 显示YouTube视频
+        function showVideo() {
+            const videoContainer = document.getElementById('videoContainer');
+            const youtubeVideo = document.getElementById('youtubeVideo');
+            
+            // 隐藏音乐按钮
+            musicBtn.classList.add('hidden');
+            
+            // 停止背景音乐
+            bgMusic.pause();
+            
+            // 设置YouTube视频URL（自动播放、循环、隐藏控制栏）
+            youtubeVideo.src = 'https://www.youtube.com/embed/zBXv-w2EJAM?autoplay=1&loop=1&playlist=zBXv-w2EJAM&controls=0&modestbranding=1&rel=0';
+            
+            videoContainer.classList.add('active');
+        }
+        
+        // 防止页面滚动（iPhone Safari）
+        document.body.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+        }, { passive: false });
+    </script>
+</body>
+</html>
