@@ -146,14 +146,45 @@
         /* 生日祝福文字 */
         .birthday-text {
             color: white;
-            font-size: 48px;
             text-align: center;
-            line-height: 1.6;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8),
-                         0 0 40px rgba(255, 215, 0, 0.5);
             animation: bounceIn 1s ease-out;
-            white-space: pre-line;
             padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .birthday-text .english {
+            font-size: 32px;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px rgba(255, 182, 193, 0.8),
+                         0 0 30px rgba(255, 105, 180, 0.6);
+            margin-bottom: 5px;
+        }
+        
+        .birthday-text .name {
+            font-size: 56px;
+            font-weight: bold;
+            letter-spacing: 8px;
+            text-shadow: 0 0 25px rgba(255, 215, 0, 0.9),
+                         0 0 50px rgba(255, 215, 0, 0.6),
+                         0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .birthday-text .chinese {
+            font-size: 40px;
+            line-height: 1.5;
+            text-shadow: 0 0 20px rgba(135, 206, 250, 0.8),
+                         0 0 40px rgba(135, 206, 250, 0.5),
+                         0 5px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .birthday-text .emoji {
+            font-size: 64px;
+            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
         }
         
         @keyframes bounceIn {
@@ -283,8 +314,12 @@
     
     <!-- 场景2: 生日祝福 -->
     <div class="scene" id="scene2">
-        <div class="birthday-text" id="birthdayText">奥奥
-17岁生日快乐！🎉</div>
+        <div class="birthday-text" id="birthdayText">
+            <div class="english">Happy 17th Birthday</div>
+            <div class="name">奥奥</div>
+            <div class="chinese">生日快乐！</div>
+            <div class="emoji">🎉</div>
+        </div>
     </div>
     
     <!-- 场景3: 信件 -->
@@ -397,28 +432,52 @@
         giftBox.addEventListener('click', () => {
             giftBox.classList.add('shrink');
             
-            // 五彩纸屑和烟花效果
+            // 增强的五彩纸屑和烟花效果
             setTimeout(() => {
-                // 连续发射五彩纸屑
-                const duration = 3000;
+                const colors = ['#ff0000', '#ffd700', '#00ff00', '#00bfff', '#ff1493', '#ff69b4', '#9370db', '#ffff00'];
+                
+                // 立即爆炸 - 中心大爆炸
+                confetti({
+                    particleCount: 150,
+                    spread: 180,
+                    origin: { x: 0.5, y: 0.5 },
+                    colors: colors,
+                    startVelocity: 45,
+                    ticks: 200,
+                    gravity: 1
+                });
+                
+                // 连续发射五彩纸屑（持续更久）
+                const duration = 4000;
                 const end = Date.now() + duration;
                 
-                const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
-                
                 (function frame() {
+                    // 左侧发射
                     confetti({
-                        particleCount: 7,
+                        particleCount: 10,
                         angle: 60,
-                        spread: 55,
-                        origin: { x: 0 },
-                        colors: colors
+                        spread: 60,
+                        origin: { x: 0, y: 0.8 },
+                        colors: colors,
+                        startVelocity: 35
                     });
+                    // 右侧发射
                     confetti({
-                        particleCount: 7,
+                        particleCount: 10,
                         angle: 120,
-                        spread: 55,
-                        origin: { x: 1 },
-                        colors: colors
+                        spread: 60,
+                        origin: { x: 1, y: 0.8 },
+                        colors: colors,
+                        startVelocity: 35
+                    });
+                    // 底部中央发射
+                    confetti({
+                        particleCount: 8,
+                        angle: 90,
+                        spread: 45,
+                        origin: { x: 0.5, y: 1 },
+                        colors: colors,
+                        startVelocity: 40
                     });
                     
                     if (Date.now() < end) {
@@ -426,30 +485,54 @@
                     }
                 }());
                 
-                // 烟花效果
+                // 延迟烟花效果（多次爆炸）
                 setTimeout(() => {
                     confetti({
-                        particleCount: 100,
-                        spread: 70,
-                        origin: { y: 0.6 },
-                        colors: colors
+                        particleCount: 120,
+                        spread: 80,
+                        origin: { x: 0.3, y: 0.6 },
+                        colors: colors,
+                        startVelocity: 40
                     });
-                }, 500);
+                }, 300);
                 
                 setTimeout(() => {
                     confetti({
-                        particleCount: 100,
-                        spread: 70,
-                        origin: { y: 0.6 },
-                        colors: colors
+                        particleCount: 120,
+                        spread: 80,
+                        origin: { x: 0.7, y: 0.6 },
+                        colors: colors,
+                        startVelocity: 40
                     });
-                }, 1000);
-            }, 500);
+                }, 600);
+                
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 150,
+                        spread: 90,
+                        origin: { x: 0.5, y: 0.5 },
+                        colors: colors,
+                        startVelocity: 45
+                    });
+                }, 900);
+                
+                // 最后一波星星效果
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 80,
+                        spread: 360,
+                        origin: { x: 0.5, y: 0.4 },
+                        colors: colors,
+                        shapes: ['star'],
+                        startVelocity: 30
+                    });
+                }, 1200);
+            }, 300);
             
             // 切换到场景2
             setTimeout(() => {
                 switchScene(1, 2);
-            }, 800);
+            }, 1000);
         });
         
         // 场景2: 生日祝福点击
